@@ -122,6 +122,13 @@ function deleteRow() {
 	);
 }
 
+function removeAllColor() {
+	const cells = document.querySelectorAll(".box");
+	cells.forEach((cell) => {
+		cell.style.backgroundColor = "white";
+	});
+}
+
 function App() {
 	const [color, setColor] = useState("");
 	return (
@@ -166,6 +173,30 @@ function App() {
 					onClick={(e) => deleteRow(e.target.value)}
 				>
 					Remove Row
+				</Button>
+				<Button
+					variant='contained'
+					color='error'
+					style={{ color: "white" }}
+					onClick={(e) => removeAllColor(e.target.value)}
+				>
+					Clear All Cells
+				</Button>
+				<Button
+					variant='contained'
+					color='warning'
+					style={{ color: "white" }}
+					onClick={(e) => deleteRow(e.target.value)}
+				>
+					Color All Cells
+				</Button>
+				<Button
+					variant='contained'
+					color='info'
+					style={{ color: "white" }}
+					onClick={(e) => deleteRow(e.target.value)}
+				>
+					Color all Uncolored Cells
 				</Button>
 				<input
 					type='color'
