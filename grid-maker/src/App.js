@@ -129,8 +129,27 @@ function removeAllColor() {
 	});
 }
 
+function colorUncoloredCells(color) {
+	const cells = document.querySelectorAll(".box");
+
+	cells.forEach((cell) => {
+		// Get the computed style of the cell
+		const computedStyle = getComputedStyle(cell);
+
+		// Check if the background color is white (in any format)
+		if (
+			computedStyle.backgroundColor === "rgb(255, 255, 255)" ||
+			computedStyle.backgroundColor === "#ffffff" ||
+			computedStyle.backgroundColor.toLowerCase() === "white" ||
+			computedStyle.backgroundColor === "rgba(0, 0, 0, 0)" // Fully transparent
+		) {
+			cell.style.backgroundColor = color;
+		}
+    });
+}
+
 function App() {
-	const [color, setColor] = useState("");
+	const [color, setColor] = useState("#ff00ff");
 	return (
 		<div>
 			<div
@@ -191,15 +210,16 @@ function App() {
 					Color All Cells
 				</Button>
 				<Button
-					variant='contained'
-					color='info'
+					variant="contained"
+					color="info"
 					style={{ color: "white" }}
-					onClick={(e) => deleteRow(e.target.value)}
+					onClick={(e) => colorUncoloredCells(color,e.target.value)}
 				>
 					Color all Uncolored Cells
 				</Button>
 				<input
 					type='color'
+					value={color}
 					onChange={(e) => setColor(e.target.value)}
 				/>
 				<h1>{color}</h1>
