@@ -148,6 +148,16 @@ function colorUncoloredCells(color) {
     });
 }
 
+function colorAllCells(color) {
+	const grid = document.getElementById("dynamic-grid");
+	if (grid) {
+	  const cells = grid.querySelectorAll(".box");
+	  cells.forEach((cell) => {
+		cell.style.backgroundColor = color;
+	  });
+	}
+  }
+
 function App() {
 	const [color, setColor] = useState("#ff00ff");
 	return (
@@ -202,11 +212,11 @@ function App() {
 					Clear All Cells
 				</Button>
 				<Button
-					variant='contained'
-					color='warning'
+					variant="contained"
+					color="warning"
 					style={{ color: "white" }}
-					onClick={(e) => deleteRow(e.target.value)}
-				>
+					onClick={() => colorAllCells(color)}
+					>
 					Color All Cells
 				</Button>
 				<Button
