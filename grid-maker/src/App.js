@@ -1,6 +1,7 @@
 import "./App.css";
 import { Button } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+
 
 var rowCounter = 0;
 var columnCounter = 0;
@@ -148,8 +149,36 @@ function colorUncoloredCells(color) {
     });
 }
 
+function colorAllCells(color) {
+	const grid = document.getElementById("dynamic-grid");
+	if (grid) {
+	  const cells = grid.querySelectorAll(".box");
+	  cells.forEach((cell) => {
+		cell.style.backgroundColor = color;
+	  });
+	}
+  }
+
+
 function App() {
 	const [color, setColor] = useState("#ff00ff");
+	const changeCellColor = useCallback((event) => {
+		const clickedCell = event.target;
+		// Set the background color of the clicked cell to the selected color
+		clickedCell.style.backgroundColor = color;
+	  }, [color]);
+	
+	  useEffect(() => {
+		const grid = document.getElementById("dynamic-grid");
+		if (grid) {
+		  grid.addEventListener("click", changeCellColor);
+		}
+	
+		return () => {
+		  grid.removeEventListener("click", changeCellColor);
+		};
+	  }, [changeCellColor]);
+	
 	return (
 		<div>
 			<div
@@ -202,11 +231,11 @@ function App() {
 					Clear All Cells
 				</Button>
 				<Button
-					variant='contained'
-					color='warning'
+					variant="contained"
+					color="warning"
 					style={{ color: "white" }}
-					onClick={(e) => deleteRow(e.target.value)}
-				>
+					onClick={() => colorAllCells(color)}
+					>
 					Color All Cells
 				</Button>
 				<Button
