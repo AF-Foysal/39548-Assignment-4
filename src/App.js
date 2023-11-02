@@ -160,25 +160,61 @@ function colorAllCells(color) {
   }
 
 
-function App() {
+  function fillContiguousCells(targetCell, color) {
+	const targetColor = targetCell.style.backgroundColor;
+	const queue = [targetCell];
+  
+	while (queue.length > 0) {
+	  const cell = queue.pop();
+  
+	  if (cell.style.backgroundColor === targetColor) {
+		cell.style.backgroundColor = color;
+  
+		const row = cell.parentElement;
+		const cellIndex = cell.cellIndex;
+  
+		const leftCell = row.cells[cellIndex - 1];
+		const rightCell = row.cells[cellIndex + 1];
+		const aboveRow = row.previousElementSibling;
+		const belowRow = row.nextElementSibling;
+  
+		if (leftCell) queue.push(leftCell);
+		if (rightCell) queue.push(rightCell);
+		if (aboveRow) queue.push(aboveRow.cells[cellIndex]);
+		if (belowRow) queue.push(belowRow.cells[cellIndex]);
+	  }
+	}
+  }
+  
+  function App() {
 	const [color, setColor] = useState("#ff00ff");
+	const [paintBucketMode, setPaintBucketMode] = useState(false);
+  
 	const changeCellColor = useCallback((event) => {
-		const clickedCell = event.target;
-		// Set the background color of the clicked cell to the selected color
-		clickedCell.style.backgroundColor = color;
-	  }, [color]);
-	
-	  useEffect(() => {
-		const grid = document.getElementById("dynamic-grid");
-		if (grid) {
-		  grid.addEventListener("click", changeCellColor);
-		}
-	
-		return () => {
-		  grid.removeEventListener("click", changeCellColor);
-		};
-	  }, [changeCellColor]);
-	
+	  const clickedCell = event.target;
+	  const selectedColor = document.getElementById("color").value;
+  
+	  if (paintBucketMode) {
+		fillContiguousCells(clickedCell, selectedColor);
+	  } else {
+		clickedCell.style.backgroundColor = selectedColor;
+	  }
+	}, [paintBucketMode]);
+  
+	useEffect(() => {
+	  const grid = document.getElementById("dynamic-grid");
+	  if (grid) {
+		grid.addEventListener("click", changeCellColor);
+	  }
+  
+	  return () => {
+		grid.removeEventListener("click", changeCellColor);
+	  };
+	}, [changeCellColor]);
+  
+	const togglePaintBucketMode = () => {
+	  setPaintBucketMode((prevMode) => !prevMode);
+	};
 	return (
 		<div>
 			<div
@@ -244,13 +280,22 @@ function App() {
 					style={{ color: "white" }}
 					onClick={(e) => colorUncoloredCells(color,e.target.value)}
 				>
-					Color all Uncolored Cells
-				</Button>
-				<input
-					type='color'
-					value={color}
-					onChange={(e) => setColor(e.target.value)}
-				/>
+          Color all Uncolored Cells
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ color: "white" }}
+          onClick={togglePaintBucketMode}
+        >
+          {paintBucketMode ? "Disable Paint Bucket" : "Enable Paint Bucket"}
+        </Button>
+        <input
+          type="color"
+          value={color}
+          id="color"
+          onChange={(e) => setColor(e.target.value)}
+        />
 				<h1>{color}</h1>
 			</div>
 			<table bgcolor='white' id='dynamic-grid'></table>
